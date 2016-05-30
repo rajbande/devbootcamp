@@ -1,12 +1,9 @@
 package com.thoughtworks.devbootcamp.probability;
 
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ProbabilityTest {
   @Test
@@ -14,6 +11,14 @@ public class ProbabilityTest {
     Probability probability = new Probability(0.4);
     Probability negation = new Probability(0.6);
     assertThat(probability.negate(), is(negation));
+  }
+
+  @Test
+  public void testDoubleNegation() {
+    Probability probability = new Probability(0.3);
+    Probability negation = new Probability(0.3);
+    Probability negated = probability.negate();
+    assertThat(negated.negate(), is(negation));
   }
 
   @Test
@@ -46,5 +51,21 @@ public class ProbabilityTest {
     Double dbl = Double.valueOf(0.4);
 
     assertFalse(probability.equals(dbl));
+  }
+
+  @Test
+  public void shouldAnd() {
+    Probability probability1 = new Probability(0.4);
+    Probability probability2 = new Probability(0.3);
+
+    assertThat(probability1.and(probability2), is(new Probability(0.12)));
+  }
+
+  @Test
+  public void shouldOr() {
+    Probability probability1 = new Probability(0.4);
+    Probability probability2 = new Probability(0.3);
+
+    assertThat(probability1.or(probability2), is(new Probability(0.7)));
   }
 }
