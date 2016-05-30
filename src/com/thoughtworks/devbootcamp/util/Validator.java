@@ -1,4 +1,4 @@
-package com.thoghtworks.devbootcamp.util;
+package com.thoughtworks.devbootcamp.util;
 
 public class Validator {
   public static boolean isInvalid(double... dimensions) {

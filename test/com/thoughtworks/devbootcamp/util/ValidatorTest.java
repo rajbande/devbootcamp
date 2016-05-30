@@ -1,6 +1,5 @@
-package com.thoghtworks.devbootcamp.util;
+package com.thoughtworks.devbootcamp.util;
 
-import org.hamcrest.core.Is;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;

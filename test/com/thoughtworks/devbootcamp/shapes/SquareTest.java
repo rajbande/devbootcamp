@@ -1,7 +1,6 @@
-package com.thoghtworks.devbootcamp;
+package com.thoughtworks.devbootcamp.shapes;
 
-import com.thoghtworks.devbootcamp.exceptions.InvalidDimensionsException;
-import com.thoghtworks.devbootcamp.shapes.Square;
+import com.thoughtworks.devbootcamp.exceptions.InvalidDimensionsException;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;

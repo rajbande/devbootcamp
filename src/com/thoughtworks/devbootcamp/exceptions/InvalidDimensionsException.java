@@ -1,4 +1,4 @@
-package com.thoghtworks.devbootcamp.exceptions;
+package com.thoughtworks.devbootcamp.exceptions;
 
 public class InvalidDimensionsException extends Exception{
   public InvalidDimensionsException(String s) {

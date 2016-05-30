@@ -1,7 +1,7 @@
-package com.thoghtworks.devbootcamp.shapes;
+package com.thoughtworks.devbootcamp.shapes;
 
-import com.thoghtworks.devbootcamp.exceptions.InvalidDimensionsException;
-import com.thoghtworks.devbootcamp.util.Validator;
+import com.thoughtworks.devbootcamp.exceptions.InvalidDimensionsException;
+import com.thoughtworks.devbootcamp.util.Validator;
 
 /**
  * Creates a {@code Rectangle} with given length and breadth.

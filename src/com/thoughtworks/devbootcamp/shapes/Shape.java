@@ -1,4 +1,4 @@
-package com.thoghtworks.devbootcamp.shapes;
+package com.thoughtworks.devbootcamp.shapes;
 
 public interface Shape {
   public double area();
