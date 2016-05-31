@@ -13,8 +13,8 @@ public class Probability {
     return new Probability(round(negatedChance));
   }
 
-  private double round(double negatedChance) {
-    return (Math.round(negatedChance * 10000))/10000.0;
+  private double round(double chance) {
+    return (Math.round(chance * 10000)) / 10000.0;
   }
 
   public Probability and(Probability that) {
@@ -22,7 +22,7 @@ public class Probability {
   }
 
   public Probability or(Probability that) {
-    return new Probability(this.chance + that.chance);
+    return new Probability((this.chance + that.chance) - this.and(that).chance);
   }
 
   @Override

@@ -66,6 +66,22 @@ public class ProbabilityTest {
     Probability probability1 = new Probability(0.4);
     Probability probability2 = new Probability(0.3);
 
-    assertThat(probability1.or(probability2), is(new Probability(0.7)));
+    assertThat(probability1.or(probability2), is(new Probability(0.58)));
+  }
+
+  @Test
+  public void shouldOrWithUpperBoundaryConditions() {
+    Probability probability1 = new Probability(1.0);
+    Probability probability2 = new Probability(1.0);
+
+    assertThat(probability1.or(probability2), is(new Probability(1.0)));
+  }
+
+  @Test
+  public void shouldOrWithLowerBoundaryConditions() {
+    Probability probability1 = new Probability(0.0);
+    Probability probability2 = new Probability(0.0);
+
+    assertThat(probability1.or(probability2), is(new Probability(0.0)));
   }
 }
