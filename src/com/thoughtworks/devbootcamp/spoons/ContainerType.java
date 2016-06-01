@@ -15,16 +15,15 @@ public enum ContainerType {
     this.conversionFactor = conversionFactor;
   }
 
-  public float convert(int thisQuantity, ContainerType thatSpoonType){
-    return (float)(thisQuantity * this.conversionFactor)/thatSpoonType.conversionFactor;
+  public float to(int times, ContainerType thatSpoonType){
+    return (float)(times * this.conversionFactor)/thatSpoonType.conversionFactor;
   }
 
-  public boolean isEqual(int quantity1, int quantity2, ContainerType thatSpoonType){
-    return this.conversionFactor*quantity1 == quantity2*thatSpoonType.conversionFactor;
-
+  public boolean isEqual(int times, int thatTypeTimes, ContainerType thatSpoonType){
+    return this.conversionFactor * times == thatTypeTimes*thatSpoonType.conversionFactor;
   }
-  public float getFactor(ContainerType thatSpoonType){
+
+  public float conversionFactor(ContainerType thatSpoonType){
     return this.conversionFactor/thatSpoonType.conversionFactor;
-
   }
 }
