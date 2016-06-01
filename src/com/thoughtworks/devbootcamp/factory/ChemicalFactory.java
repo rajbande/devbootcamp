@@ -10,7 +10,7 @@ public class ChemicalFactory {
 
     private List<Chemical> chemicals;
     private List<Machine> machines = asList(new Packager(1), new Cooler(1),
-            new Reactor(1), new Mixer(1), new Grinder(1));
+            new Reactor(1), new Mixer(2), new Grinder(2));
 
     public int productionTime(Chemical... chemicals) {
         this.chemicals = new ArrayList<>(asList(chemicals));

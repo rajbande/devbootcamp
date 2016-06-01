@@ -1,21 +1,41 @@
 package com.thoughtworks.devbootcamp.chemicalfactory;
 
-public abstract class Machine {
+public enum Machine {
+    GRINDER(2),
+    MIXER(2),
+    REACTOR(1),
+    COOLER(1),
+    PACKAGER(1);
 
     protected int count;
-    protected int users;
+    private int jobs;
 
-    public Machine(int count) {
+    Machine(int count) {
         this.count = count;
     }
 
-    public abstract void process(Chemical chemical);
+    public void process(Chemical chemical, Machine machine) {
+        boolean available = getAvailability(machine);
 
-    public boolean isAvailable() {
-        return users < count;
+        if (chemical.shouldProcess(machine) && available) {
+            chemical.process(machine);
+            jobs++;
+        }
     }
 
-    public void reset() {
-        users = 0;
+    private boolean getAvailability(Machine machine) {
+        boolean available = isAvailable();
+        if(machine == COOLER) {
+            available = true;
+        }
+        return available;
+    }
+
+    public boolean isAvailable() {
+        return jobs < count;
+    }
+
+    public void clearJobs() {
+        jobs = 0;
     }
 }

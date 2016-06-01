@@ -1,5 +1,7 @@
 package com.thoughtworks.devbootcamp.chemicalfactory;
 
+import static com.thoughtworks.devbootcamp.chemicalfactory.Machine.*;
+
 public class Chemical {
     private int grinderTime;
     private int mixerTime;
@@ -15,49 +17,6 @@ public class Chemical {
         this.packagerTime = packager;
     }
 
-    public void grind() {
-        grinderTime -= 1;
-    }
-
-    public void mix() {
-        mixerTime -= 1;
-    }
-
-    public void react() {
-        reactorTime -= 1;
-    }
-
-
-    public void cool() {
-        coolerTime -= 1;
-    }
-
-    public void pack() {
-        packagerTime -= 1;
-    }
-
-    public boolean shouldGrind() {
-        return grinderTime > 0;
-    }
-
-    public boolean shouldMix() {
-        return mixerTime > 0 && grinderTime <= 0;
-    }
-
-    public boolean shouldReact() {
-        return reactorTime > 0 && mixerTime <= 0;
-    }
-
-
-    public boolean shouldCool() {
-        return coolerTime > 0 && reactorTime <= 0;
-    }
-
-
-    public boolean shouldPack() {
-        return packagerTime > 0 && coolerTime <= 0;
-    }
-
     public boolean isComplete() {
         return packagerTime <= 0;
     }
@@ -71,5 +30,34 @@ public class Chemical {
                 ", coolerTime=" + coolerTime +
                 ", packagerTime=" + packagerTime +
                 '}';
+    }
+
+    public boolean shouldProcess(Machine machine) {
+        if(machine == GRINDER){
+            return grinderTime > 0;
+        } else if(machine == MIXER){
+            return mixerTime > 0 && grinderTime <= 0;
+        } else if(machine == REACTOR){
+            return reactorTime > 0 && mixerTime <= 0;
+        } else if(machine == COOLER){
+            return coolerTime > 0 && reactorTime <= 0;
+        } else if(machine == PACKAGER){
+            return packagerTime > 0 && coolerTime <= 0;
+        }
+        return false;
+    }
+
+    public void process(Machine machine) {
+        if(machine == GRINDER){
+            grinderTime--;
+        } else if(machine == MIXER){
+            mixerTime--;
+        } else if(machine == REACTOR){
+            reactorTime--;
+        } else if(machine == COOLER){
+            coolerTime--;
+        } else if(machine == PACKAGER){
+            packagerTime--;
+        }
     }
 }

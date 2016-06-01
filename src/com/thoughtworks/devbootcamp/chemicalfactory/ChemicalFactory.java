@@ -4,24 +4,29 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.thoughtworks.devbootcamp.chemicalfactory.Machine.*;
 import static java.util.Arrays.asList;
 
 public class ChemicalFactory {
 
+    private static final int BASE_PRODUCTION_TIME = 1;
     private List<Chemical> chemicals;
-    private List<Machine> machines = asList(new Packager(1), new Cooler(1),
-            new Reactor(1), new Mixer(1), new Grinder(1));
+    private List<Machine> machines = asList(PACKAGER, COOLER, REACTOR, MIXER, GRINDER);
 
-    public int productionTime(Chemical... chemicals) {
-        this.chemicals = new ArrayList<>(asList(chemicals));
+    public int getProductionTime(Chemical... chemicalJobs) {
+        this.chemicals = new ArrayList<>(asList(chemicalJobs));
 
-        int productionTime = 1;
-        while (this.chemicals.size() > 0) {
+        int productionTime = BASE_PRODUCTION_TIME;
+        productionTime = calculateProductionTime(productionTime);
+        return productionTime;
+    }
 
-            resetMachines();
+    private int calculateProductionTime(int productionTime) {
+        while (!chemicals.isEmpty()) {
+            clearJobs();
             processChemicals();
 
-            if (this.chemicals.size() > 0) {
+            if (!chemicals.isEmpty()) {
                 productionTime++;
             }
         }
@@ -30,24 +35,30 @@ public class ChemicalFactory {
 
     private void processChemicals() {
         Iterator<Chemical> chemicals = this.chemicals.iterator();
+
         while (chemicals.hasNext()) {
             Chemical chemical = chemicals.next();
-            processChemical(chemical);
-            if (chemical.isComplete()) {
-                chemicals.remove();
-            }
+            processChemical(chemicals, chemical);
         }
     }
 
-    private void processChemical(Chemical chemical) {
+    private void processChemical(Iterator<Chemical> chemicals, Chemical chemical) {
         for (Machine machine : machines) {
-            machine.process(chemical);
+            machine.process(chemical, machine);
+        }
+
+        purgeIfComplete(chemicals, chemical);
+    }
+
+    private void purgeIfComplete(Iterator<Chemical> chemicals, Chemical chemical) {
+        if (chemical.isComplete()) {
+            chemicals.remove();
         }
     }
 
-    private void resetMachines() {
+    private void clearJobs() {
         for (Machine machine : machines) {
-            machine.reset();
+            machine.clearJobs();
         }
     }
 }
