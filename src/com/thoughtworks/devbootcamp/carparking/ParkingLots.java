@@ -13,17 +13,9 @@ public class ParkingLots {
   private Map<Object,Slip> slipMap;
 
 
-  public ParkingLots(Integer... capacities) {
-    createParkingLots(capacities);
-  }
-
-  private void createParkingLots(Integer[] capacities) {
-    parkingLots = new HashMap<>(capacities.length);
-    slipMap = new HashMap<>(capacities.length);
-
-    for (int i = 0; i < capacities.length; i++) {
-      parkingLots.put(i, new ParkingLot(i, capacities[i]));
-    }
+  public ParkingLots(Map<Integer, ParkingLot> parkingLotsList) {
+    slipMap = new HashMap<>(parkingLotsList.size());
+    parkingLots = parkingLotsList;
   }
 
   public int getParkingLotCount() {
@@ -32,6 +24,11 @@ public class ParkingLots {
 
   public Token park(String regNo) throws CarParkException, ParkingLotFullException {
     ParkingLot freeParkingLot = getFreeParkingLot();
+
+    if(carAlreadyParked(regNo)) {
+      throw new CarParkException("Car already parked");
+    }
+
     Token parkingLotToken = freeParkingLot.park(regNo);
 
     Token newToken = new Token();
@@ -39,6 +36,15 @@ public class ParkingLots {
     slipMap.put(newToken, new Slip(freeParkingLot.getParkingLotId(), parkingLotToken));
 
     return newToken;
+  }
+
+  private boolean carAlreadyParked(String regNo) {
+    for (ParkingLot parkingLot : parkingLots.values()) {
+      if(parkingLot.isCarAlreadyParked(regNo)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private ParkingLot getFreeParkingLot() throws ParkingLotFullException {

@@ -6,7 +6,8 @@ import com.thoughtworks.devbootcamp.carparking.exceptions.ParkingLotFullExceptio
 import com.thoughtworks.devbootcamp.carparking.models.Token;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.omg.CORBA.OBJ_ADAPTER;
+
+import java.util.HashMap;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
@@ -17,48 +18,55 @@ public class ParkingLotsTest {
 
   @Test
   public void shouldCreateParkingLotsWithGivenCapacities() {
-    ParkingLots parkingLots = new ParkingLots(1, 3);
-    assertThat(parkingLots.getParkingLotCount(), is(2));
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(1);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
+    assertThat(parkingLots.getParkingLotCount(), is(1));
   }
 
   @Test
   public void testParkingSuccessful() throws CarParkException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(1);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(1);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     assertNotNull(parkingLots.park(REGISTRATION_NUMBER));
   }
 
   @Test(expected = ParkingLotFullException.class)
   public void testCannotParkIfParkingLotsHasZeroCapacity() throws CarParkException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(0);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(0);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     parkingLots.park(REGISTRATION_NUMBER);
   }
 
 
   @Test (expected = ParkingLotFullException.class)
   public void testCannotParkIfParkingLotsIsFull() throws CarParkException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(2);
-    parkingLots.park(REGISTRATION_NUMBER);
-    parkingLots.park(REGISTRATION_NUMBER+1);
-    parkingLots.park(REGISTRATION_NUMBER+2);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(2);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
+    for (int i = 0; i < 5; i++) {
+      parkingLots.park(REGISTRATION_NUMBER+":"+i);
+    }
   }
 
   @Test(expected = CarParkException.class)
   public void testSameCarCannotBeParkedTwice() throws CarParkException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(3);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(2);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     parkingLots.park(REGISTRATION_NUMBER);
     parkingLots.park(REGISTRATION_NUMBER);
   }
 
   @Test(expected = ParkingLotFullException.class)
   public void testSameCarCanNotBeParkedTwiceEvenWhenParkingLotsIsFull() throws CarParkException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(1);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(1);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     parkingLots.park(REGISTRATION_NUMBER);
     parkingLots.park(REGISTRATION_NUMBER);
   }
 
   @Test
   public void testRetriveParkedCar() throws CarRetrievalException, CarParkException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(1);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(1);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     String parkedCar = REGISTRATION_NUMBER;
     Token token = parkingLots.park(parkedCar);
     String retrievedCar = parkingLots.retrieve(token);
@@ -67,7 +75,8 @@ public class ParkingLotsTest {
 
   @Test(expected = CarRetrievalException.class)
   public void testCannotRetrieveUsingTheSameToken() throws CarRetrievalException, CarParkException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(1);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(1);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     Token token = parkingLots.park(REGISTRATION_NUMBER);
     parkingLots.retrieve(token);
     parkingLots.retrieve(token);
@@ -75,7 +84,8 @@ public class ParkingLotsTest {
 
   @Test
   public void testCanParkAfterACarIsRetrievedFromAFullParkingLots() throws CarParkException, CarRetrievalException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(1);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(1);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     Token token = parkingLots.park(REGISTRATION_NUMBER);
     parkingLots.retrieve(token);
     assertNotNull(parkingLots.park(REGISTRATION_NUMBER));
@@ -83,7 +93,8 @@ public class ParkingLotsTest {
 
   @Test(expected = CarRetrievalException.class)
   public void testCannotRetrieveUsingInvalidToken() throws CarRetrievalException, CarParkException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(1);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(1);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     parkingLots.park(REGISTRATION_NUMBER);
     parkingLots.retrieve(new Token());
   }
@@ -93,14 +104,16 @@ public class ParkingLotsTest {
 
   @Test(expected = ParkingLotFullException.class)
   public void testCannotParkIfParkingLotsHasZeroCapacityForMultipleParkingLots() throws CarParkException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(0, 0);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(0,0);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     parkingLots.park(REGISTRATION_NUMBER);
   }
 
 
   @Test (expected = ParkingLotFullException.class)
   public void testCannotParkIfParkingLotsIsFullForMultipleParkingLots() throws CarParkException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(2, 1);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(2,1);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     parkingLots.park(REGISTRATION_NUMBER);
     parkingLots.park(REGISTRATION_NUMBER+1);
     parkingLots.park(REGISTRATION_NUMBER+2);
@@ -109,22 +122,25 @@ public class ParkingLotsTest {
 
   @Test(expected = CarParkException.class)
   public void testSameCarCannotBeParkedTwiceForMultipleParkingLots() throws CarParkException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(3, 1);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(3,1);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     parkingLots.park(REGISTRATION_NUMBER);
     parkingLots.park(REGISTRATION_NUMBER);
   }
 
   @Test(expected = ParkingLotFullException.class)
   public void testSameCarCanNotBeParkedTwiceEvenWhenParkingLotsIsFullForMultipleParkingLots() throws CarParkException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(1, 1);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(1,1);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     parkingLots.park(REGISTRATION_NUMBER);
-    parkingLots.park(REGISTRATION_NUMBER);
-    parkingLots.park(REGISTRATION_NUMBER);
+    parkingLots.park(REGISTRATION_NUMBER+1);
+    parkingLots.park(REGISTRATION_NUMBER+2);
   }
 
   @Test
   public void testRetriveParkedCarForMultipleParkingLots() throws CarRetrievalException, CarParkException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(1, 1);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(1,1);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     String parkedCar = REGISTRATION_NUMBER;
     Token token = parkingLots.park(parkedCar);
     String retrievedCar = parkingLots.retrieve(token);
@@ -133,7 +149,8 @@ public class ParkingLotsTest {
 
   @Test(expected = CarRetrievalException.class)
   public void testCannotRetrieveUsingTheSameTokenForMultipleParkingLots() throws CarRetrievalException, CarParkException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(1, 5);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(1,5);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     Token token = parkingLots.park(REGISTRATION_NUMBER);
     parkingLots.retrieve(token);
     parkingLots.retrieve(token);
@@ -141,7 +158,8 @@ public class ParkingLotsTest {
 
   @Test
   public void testCanParkAfterACarIsRetrievedFromAFullParkingLotsForMultipleParkingLots() throws CarParkException, CarRetrievalException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(1, 1);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(1,1);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     Token token = parkingLots.park(REGISTRATION_NUMBER);
     parkingLots.retrieve(token);
     assertNotNull(parkingLots.park(REGISTRATION_NUMBER));
@@ -149,7 +167,8 @@ public class ParkingLotsTest {
 
   @Test(expected = CarRetrievalException.class)
   public void testCannotRetrieveUsingInvalidTokenForMultipleParkingLots() throws CarRetrievalException, CarParkException, ParkingLotFullException {
-    ParkingLots parkingLots = new ParkingLots(1 , 1);
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(1,1);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
     parkingLots.park(REGISTRATION_NUMBER);
     parkingLots.retrieve(new Token());
   }
@@ -159,5 +178,16 @@ public class ParkingLotsTest {
     ParkingLots mockParkingLots = Mockito.mock(ParkingLots.class);
     mockParkingLots.park(REGISTRATION_NUMBER);
     mockParkingLots.park(REGISTRATION_NUMBER);
+  }
+
+
+  private HashMap<Integer, ParkingLot> createParkingLots(int... arguments) {
+    HashMap<Integer, ParkingLot> parkingLots = new HashMap<>();
+
+    for (int i = 0; i < arguments.length; i++) {
+      parkingLots.put(i, new ParkingLot(i, arguments[i]));
+    }
+
+    return parkingLots;
   }
 }

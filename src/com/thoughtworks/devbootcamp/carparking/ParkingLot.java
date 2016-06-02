@@ -37,7 +37,7 @@ public class ParkingLot {
     return token;
   }
 
-  private boolean isCarAlreadyParked(String regNo) {
+  public boolean isCarAlreadyParked(String regNo) {
     return carsParked.containsValue(regNo);
   }
 
