@@ -3,6 +3,7 @@ package com.thoughtworks.devbootcamp.carparking;
 import com.thoughtworks.devbootcamp.carparking.exceptions.CarParkException;
 import com.thoughtworks.devbootcamp.carparking.exceptions.CarRetrievalException;
 import com.thoughtworks.devbootcamp.carparking.exceptions.ParkingLotFullException;
+import com.thoughtworks.devbootcamp.carparking.models.Slip;
 import com.thoughtworks.devbootcamp.carparking.models.Token;
 
 import java.util.HashMap;
@@ -12,28 +13,31 @@ public class ParkingLots {
   private Map<Integer, ParkingLot> parkingLots;
   private Map<Object,Slip> slipMap;
 
+  private ParkingStrategy parkingStrategy;
 
   public ParkingLots(Map<Integer, ParkingLot> parkingLotsList) {
     slipMap = new HashMap<>(parkingLotsList.size());
     parkingLots = parkingLotsList;
+    parkingStrategy = new FreeParkingLotStrategy();
   }
+
 
   public int getParkingLotCount() {
     return parkingLots.size();
   }
 
   public Token park(String regNo) throws CarParkException, ParkingLotFullException {
-    ParkingLot freeParkingLot = getFreeParkingLot();
+    ParkingLot parkingLot = parkingStrategy.findParkingLot(parkingLots);
 
     if(carAlreadyParked(regNo)) {
       throw new CarParkException("Car already parked");
     }
 
-    Token parkingLotToken = freeParkingLot.park(regNo);
+    Token parkingLotToken = parkingLot.park(regNo);
 
     Token newToken = new Token();
 
-    slipMap.put(newToken, new Slip(freeParkingLot.getParkingLotId(), parkingLotToken));
+    slipMap.put(newToken, new Slip(parkingLot.getParkingLotId(), parkingLotToken));
 
     return newToken;
   }
@@ -47,15 +51,6 @@ public class ParkingLots {
     return false;
   }
 
-  private ParkingLot getFreeParkingLot() throws ParkingLotFullException {
-    for (ParkingLot parkingLot : parkingLots.values()) {
-      if(parkingLot.isParkingAvailable()) {
-        return parkingLot;
-      }
-    }
-    throw new ParkingLotFullException();
-  }
-
   public String retrieve(Token token) throws CarRetrievalException {
     Slip slip = slipMap.get(token);
     if(slip == null) throw new CarRetrievalException();
@@ -67,5 +62,9 @@ public class ParkingLots {
     int parkedLotId = slip.getParkedLotId();
     ParkingLot parkingLot = parkingLots.get(parkedLotId);
     return parkingLot.retrieve(parkingLotToken);
+  }
+
+  public void setParkingStrategy(ParkingStrategy parkingStrategy) {
+    this.parkingStrategy = parkingStrategy;
   }
 }

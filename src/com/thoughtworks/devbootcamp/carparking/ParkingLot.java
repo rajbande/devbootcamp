@@ -51,4 +51,9 @@ public class ParkingLot {
   public int getParkingLotId() {
     return parkingLotId;
   }
+
+  public double getParkingOccupancy() {
+    int total = carsParked.size();
+    return ((double) (100 * total) / parkingLotCapacity);
+  }
 }

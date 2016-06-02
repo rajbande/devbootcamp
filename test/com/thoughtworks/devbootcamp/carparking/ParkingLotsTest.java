@@ -5,7 +5,6 @@ import com.thoughtworks.devbootcamp.carparking.exceptions.CarRetrievalException;
 import com.thoughtworks.devbootcamp.carparking.exceptions.ParkingLotFullException;
 import com.thoughtworks.devbootcamp.carparking.models.Token;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.util.HashMap;
 
@@ -174,13 +173,27 @@ public class ParkingLotsTest {
   }
 
   @Test
-  public void shouldParkInLeastOccupiedParkingLot() throws CarParkException, ParkingLotFullException {
-    ParkingLots mockParkingLots = Mockito.mock(ParkingLots.class);
-    mockParkingLots.park(REGISTRATION_NUMBER);
-    mockParkingLots.park(REGISTRATION_NUMBER);
+  public void shouldParkInFreeParkingLot() throws CarParkException, ParkingLotFullException {
+    HashMap<Integer, ParkingLot> parkingLotsList = getParkingLotsForStrategyTesting(new FreeParkingLotStrategy());
+    assertThat(parkingLotsList.get(0).getParkingOccupancy(), is(100.00d));
+    assertThat(parkingLotsList.get(1).getParkingOccupancy(), is(0.00d));
   }
 
+  @Test
+  public void shouldParkInLeastOccupiedParkingLot() throws CarParkException, ParkingLotFullException {
+    HashMap<Integer, ParkingLot> parkingLotsList = getParkingLotsForStrategyTesting(new LeastOccupiedParkingLotStrategy());
+    assertThat(parkingLotsList.get(0).getParkingOccupancy(), is(50.00d));
+    assertThat(parkingLotsList.get(1).getParkingOccupancy(), is(50.00d));
+  }
 
+  @Test
+  public void shouldParkInMostOccupiedButAvailableParkingLot() throws CarParkException, ParkingLotFullException {
+    HashMap<Integer, ParkingLot> parkingLotsList = getParkingLotsForStrategyTesting(new MostOccupiedParkingLotStrategy());
+    assertThat(parkingLotsList.get(0).getParkingOccupancy(), is(100.00d));
+    assertThat(parkingLotsList.get(1).getParkingOccupancy(), is(0.00d));
+  }
+
+  //Utility methods ahead
   private HashMap<Integer, ParkingLot> createParkingLots(int... arguments) {
     HashMap<Integer, ParkingLot> parkingLots = new HashMap<>();
 
@@ -189,5 +202,14 @@ public class ParkingLotsTest {
     }
 
     return parkingLots;
+  }
+
+  private HashMap<Integer, ParkingLot> getParkingLotsForStrategyTesting(ParkingStrategy strategy) throws CarParkException, ParkingLotFullException {
+    HashMap<Integer, ParkingLot> parkingLotsList = createParkingLots(2,2);
+    ParkingLots parkingLots = new ParkingLots(parkingLotsList);
+    parkingLots.setParkingStrategy(strategy);
+    parkingLots.park(REGISTRATION_NUMBER);
+    parkingLots.park(REGISTRATION_NUMBER+1);
+    return parkingLotsList;
   }
 }

@@ -81,5 +81,17 @@ public class ParkingLotTest {
         parkingLot.retrieve(new Token());
     }
 
+    @Test
+    public void testParkingLotOccupancyIsHalf() throws CarParkException, ParkingLotFullException {
+        ParkingLot parkingLot = new ParkingLot(0, 2);
+        parkingLot.park(CAR);
+        assertThat(parkingLot.getParkingOccupancy(), is(50.00d));
+    }
 
+    @Test
+    public void testParkingLotOccupancyIsCentPerCent() throws CarParkException, ParkingLotFullException {
+        ParkingLot parkingLot = new ParkingLot(0, 1);
+        parkingLot.park(CAR);
+        assertThat(parkingLot.getParkingOccupancy(), is(100.00d));
+    }
 }

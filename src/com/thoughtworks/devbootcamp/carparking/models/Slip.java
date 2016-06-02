@@ -1,6 +1,4 @@
-package com.thoughtworks.devbootcamp.carparking;
-
-import com.thoughtworks.devbootcamp.carparking.models.Token;
+package com.thoughtworks.devbootcamp.carparking.models;
 
 public class Slip {
   private int parkedLotId;

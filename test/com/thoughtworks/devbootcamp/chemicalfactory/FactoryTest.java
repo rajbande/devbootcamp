@@ -2,7 +2,7 @@ package com.thoughtworks.devbootcamp.chemicalfactory;
 
 import org.junit.Test;
 
-import static com.thoughtworks.devbootcamp.chemicalfactory.Machine.*;
+import static com.thoughtworks.devbootcamp.chemicalfactory.Machine.GRINDER;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
