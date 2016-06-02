@@ -5,6 +5,7 @@ import com.thoughtworks.devbootcamp.carparking.exceptions.CarRetrievalException;
 import com.thoughtworks.devbootcamp.carparking.exceptions.ParkingLotFullException;
 import com.thoughtworks.devbootcamp.carparking.models.Token;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.omg.CORBA.OBJ_ADAPTER;
 
 import static org.hamcrest.core.Is.is;
@@ -153,6 +154,10 @@ public class ParkingLotsTest {
     parkingLots.retrieve(new Token());
   }
 
-
-
+  @Test
+  public void shouldParkInLeastOccupiedParkingLot() throws CarParkException, ParkingLotFullException {
+    ParkingLots mockParkingLots = Mockito.mock(ParkingLots.class);
+    mockParkingLots.park(REGISTRATION_NUMBER);
+    mockParkingLots.park(REGISTRATION_NUMBER);
+  }
 }
